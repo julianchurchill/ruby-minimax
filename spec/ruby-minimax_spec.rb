@@ -1,21 +1,37 @@
-:MinNode
-:MaxNode
 
-class MaxNode
+class MinimaxNode
   attr_accessor :value
 
+  def initialize params={}
+    @value = params[:value] if params[:value] != nil
+    params[:parent].add_child( self ) if params[:parent] != nil
+  end
+
   def add_child node
-    @value = node.value if @value == nil
-    @value = node.value if node.value > @value
+    if node.value_known? then
+      @value = node.value if value_unknown?
+      @value = node.value if node.value.send( @comparisonOperator, @value )
+    end
+  end
+
+  def value_known?
+    @value != nil
+  end
+
+  def value_unknown?
+    @value == nil
   end
 end
 
-class MinNode
-  attr_accessor :value
+class MaxNode < MinimaxNode
+    def initialize params={}
+    @comparisonOperator = :>
+  end
+end
 
-  def add_child node
-    @value = node.value if @value == nil
-    @value = node.value if node.value < @value
+class MinNode < MinimaxNode
+  def initialize params={}
+    @comparisonOperator = :<
   end
 end
 
@@ -60,6 +76,16 @@ describe "ruby-minimax" do
     ## MIN               -6
     ## MAX         4            -6
     ## MIN     -4     4     -8      -6
+    #node = MinNode.new
+    #nodea = MaxNode.new( :parent=>node )
+    #nodeaa = MinNode.new( :parent=>nodea, :value=>-4 )
+    #nodeab = MinNode.new( :parent=>nodea, :value=>4 )
+    #nodeb = MaxNode.new( :parent=>node )
+    #nodeba = MinNode.new( :parent=>nodeb, :value=>-8 )
+    #nodebb = MinNode.new( :parent=>nodeb, :value=>-6 )
+
+    #node.value.should eq -6
+  #end
 
   #it "should correctly evaluate a complex minimax tree" do
     ## MIN               -6
