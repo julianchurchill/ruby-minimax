@@ -53,37 +53,29 @@ end
 
 describe "ruby-minimax" do
   it "should evaluate a min node with no children as its own value" do
-    node = MinNode.new
-    node.value = 10
+    node = MinNode.new( :value=>10 )
+
     node.value.should eq 10
   end
 
   it "should evaluate a max node with no children as its own value" do
-    node = MaxNode.new
-    node.value = 10
+    node = MaxNode.new( :value=>10 )
+
     node.value.should eq 10
   end
 
   it "should evaluate a max node as the max value of its children" do
     node = MaxNode.new
-    nodea = MinNode.new
-    nodea.value = 5
-    node.add_child nodea
-    nodeb = MinNode.new
-    nodeb.value = 15
-    node.add_child nodeb
+    nodea = MinNode.new( :parent=>node, :value=>5 )
+    nodeb = MinNode.new( :parent=>node, :value=>15 )
 
     node.value.should eq 15
   end
 
   it "should evaluate a min node as the minimum value of its children" do
     node = MinNode.new
-    nodea = MaxNode.new
-    nodea.value = 15
-    node.add_child nodea
-    nodeb = MaxNode.new
-    nodeb.value = 5
-    node.add_child nodeb
+    nodea = MaxNode.new( :parent=>node, :value=>15 )
+    nodeb = MaxNode.new( :parent=>node, :value=>5 )
 
     node.value.should eq 5
   end
