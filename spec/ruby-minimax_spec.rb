@@ -3,15 +3,25 @@ class MinimaxNode
   attr_accessor :value
 
   def initialize params={}
+    @children = []
     @value = params[:value] if params[:value] != nil
     params[:parent].add_child( self ) if params[:parent] != nil
   end
 
-  def add_child node
-    if node.value_known? then
-      @value = node.value if value_unknown?
-      @value = node.value if node.value.send( @comparisonOperator, @value )
-    end
+  def value
+    @value = find_best_child.value if value_unknown?
+    return @value
+  end
+
+  def find_best_child
+    best = nil
+    @children.each { |child| best = child if best_child? child }
+    return best
+  end
+
+  def best_child? child
+    return true if value_unknown?
+    return child.value.send( @comparisonOperator, @value )
   end
 
   def value_known?
@@ -21,17 +31,23 @@ class MinimaxNode
   def value_unknown?
     @value == nil
   end
+
+  def add_child child
+    @children += [child]
+  end
 end
 
 class MaxNode < MinimaxNode
     def initialize params={}
     @comparisonOperator = :>
+    super( params )
   end
 end
 
 class MinNode < MinimaxNode
   def initialize params={}
     @comparisonOperator = :<
+    super( params )
   end
 end
 
@@ -72,20 +88,20 @@ describe "ruby-minimax" do
     node.value.should eq 5
   end
 
-  #it "should correctly evaluate a three level minimax tree" do
-    ## MIN               -6
-    ## MAX         4            -6
-    ## MIN     -4     4     -8      -6
-    #node = MinNode.new
-    #nodea = MaxNode.new( :parent=>node )
-    #nodeaa = MinNode.new( :parent=>nodea, :value=>-4 )
-    #nodeab = MinNode.new( :parent=>nodea, :value=>4 )
-    #nodeb = MaxNode.new( :parent=>node )
-    #nodeba = MinNode.new( :parent=>nodeb, :value=>-8 )
-    #nodebb = MinNode.new( :parent=>nodeb, :value=>-6 )
+  it "should correctly evaluate a three level minimax tree" do
+    # MIN               -6
+    # MAX         4            -6
+    # MIN     -4     4     -8      -6
+    node = MinNode.new
+    nodea = MaxNode.new( :parent=>node )
+    nodeaa = MinNode.new( :parent=>nodea, :value=>-4 )
+    nodeab = MinNode.new( :parent=>nodea, :value=>4 )
+    nodeb = MaxNode.new( :parent=>node )
+    nodeba = MinNode.new( :parent=>nodeb, :value=>-8 )
+    nodebb = MinNode.new( :parent=>nodeb, :value=>-6 )
 
-    #node.value.should eq -6
-  #end
+    node.value.should eq -6
+  end
 
   #it "should correctly evaluate a complex minimax tree" do
     ## MIN               -6
