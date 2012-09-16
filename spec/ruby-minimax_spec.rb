@@ -95,49 +95,27 @@ describe "ruby-minimax" do
     node.value.should eq -6
   end
 
-  #it "should correctly evaluate a complex minimax tree" do
-    ## MIN               -6
-    ## MAX         4            -6
-    ## MIN     -4     4     -8      -6
-    ## MAX    5 -4   7 4   -8 10   -4 -6
-    #nodea = MinimaxNode.new
-    #nodea.set_value 5
-    #nodeb = MinimaxNode.new
-    #nodeb.set_value -4
-    #nodeab = MinimaxNode.new
-    #nodeab.add_child nodea
-    #nodeab.add_child nodeb
-    #nodec = MinimaxNode.new
-    #nodec.set_value 7
-    #noded = MinimaxNode.new
-    #noded.set_value 4
-    #nodecd = MinimaxNode.new
-    #nodecd.add_child nodec
-    #nodecd.add_child noded
-    #nodeabcd = MinimaxNode.new
-    #nodeabcd.add_child nodeab
-    #nodeabcd.add_child nodecd
-    #nodee = MinimaxNode.new
-    #nodee.set_value -8
-    #nodef = MinimaxNode.new
-    #nodef.set_value 10
-    #nodeef = MinimaxNode.new
-    #nodeef.add_child nodee
-    #nodeef.add_child nodef
-    #nodeg = MinimaxNode.new
-    #nodeg.set_value -4
-    #nodeh = MinimaxNode.new
-    #nodeh.set_value -6
-    #nodegh = MinimaxNode.new
-    #nodegh.add_child nodeg
-    #nodegh.add_child nodeh
-    #nodeefgh = MinimaxNode.new
-    #nodeefgh.add_child nodeef
-    #nodeefgh.add_child nodegh
-    #nodeabcdefgh = MinimaxNode.new
-    #nodeabcdefgh.add_child nodeabcd
-    #nodeabcdefgh.add_child nodeefgh
+  it "should correctly evaluate a four level minimax tree" do
+    #MIN               -6
+    #MAX         4            -6
+    #MIN     -4     4     -8      -6
+    #MAX    5 -4   7 4   -8 10   -4 -6
+    node = MinNode.new
+    nodea = MaxNode.new( :parent=>node )
+    nodeaa = MinNode.new( :parent=>nodea )
+    nodeaaa = MaxNode.new( :parent=>nodeaa, :value=>5 )
+    nodeaab = MaxNode.new( :parent=>nodeaa, :value=>-4 )
+    nodeab = MinNode.new( :parent=>nodea )
+    nodeaba = MaxNode.new( :parent=>nodeab, :value=>7 )
+    nodeabb = MaxNode.new( :parent=>nodeab, :value=>4 )
+    nodeb = MaxNode.new( :parent=>node )
+    nodeba = MinNode.new( :parent=>nodeb )
+    nodebaa = MaxNode.new( :parent=>nodeba, :value=>-8 )
+    nodebab = MaxNode.new( :parent=>nodeba, :value=>10 )
+    nodebb = MinNode.new( :parent=>nodeb )
+    nodebba = MaxNode.new( :parent=>nodebb, :value=>-4 )
+    nodebbb = MaxNode.new( :parent=>nodebb, :value=>-6 )
 
-    #nodeabcdefgh.evaluate_min.should eq -6
-  #end
+    node.value.should eq -6
+  end
 end
