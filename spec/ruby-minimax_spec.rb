@@ -1,59 +1,59 @@
 :MinNode
 :MaxNode
 
-class MinimaxNode
-
-  def initialize type
-    @type = type
-    @max_child_value = -100000000
-    @min_child_value = 100000000
-  end
-
-  def set_value value
-    @value = value
-  end
-
-  def evaluate
-    return @value if @value != nil
-    return @max_child_value if @type == :MaxNode
-    return @min_child_value if @type == :MinNode
-  end
+class MaxNode
+  attr_accessor :value
 
   def add_child node
-    @max_child_value = node.evaluate if node.evaluate > @max_child_value
-    @min_child_value = node.evaluate if node.evaluate < @min_child_value
+    @value = node.value if @value == nil
+    @value = node.value if node.value > @value
+  end
+end
+
+class MinNode
+  attr_accessor :value
+
+  def add_child node
+    @value = node.value if @value == nil
+    @value = node.value if node.value < @value
   end
 end
 
 describe "ruby-minimax" do
-  it "should evaluate a leaf node as its own value" do
-    node = MinimaxNode.new :MinNode
-    node.set_value 10
-    node.evaluate.should eq 10
+  it "should evaluate a min node with no children as its own value" do
+    node = MinNode.new
+    node.value = 10
+    node.value.should eq 10
+  end
+
+  it "should evaluate a max node with no children as its own value" do
+    node = MaxNode.new
+    node.value = 10
+    node.value.should eq 10
   end
 
   it "should evaluate a max node as the max value of its children" do
-    node = MinimaxNode.new :MaxNode
-    nodea = MinimaxNode.new :MinNode
-    nodea.set_value 15
+    node = MaxNode.new
+    nodea = MinNode.new
+    nodea.value = 5
     node.add_child nodea
-    nodeb = MinimaxNode.new :MinNode
-    nodeb.set_value 5
+    nodeb = MinNode.new
+    nodeb.value = 15
     node.add_child nodeb
 
-    node.evaluate.should eq 15
+    node.value.should eq 15
   end
 
   it "should evaluate a min node as the minimum value of its children" do
-    node = MinimaxNode.new :MinNode
-    nodea = MinimaxNode.new :MaxNode
-    nodea.set_value 15
+    node = MinNode.new
+    nodea = MaxNode.new
+    nodea.value = 15
     node.add_child nodea
-    nodeb = MinimaxNode.new :MaxNode
-    nodeb.set_value 5
+    nodeb = MaxNode.new
+    nodeb.value = 5
     node.add_child nodeb
 
-    node.evaluate.should eq 5
+    node.value.should eq 5
   end
 
   #it "should correctly evaluate a three level minimax tree" do
